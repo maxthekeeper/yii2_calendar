@@ -19,8 +19,8 @@ class m160430_184649_create_user extends Migration
             'surname' => $this->string(45)->notNull(),
             'password' => $this->string(255)->notNull(),
             'salt' => $this->string(255)->notNull(),
-            'access_token' => $this->string(255),
-            'create_date' => $this->dateTime()->notNull()
+            'access_token' => $this->string(255)->defaultValue(null),
+            'create_date' => $this->timestamp()->notNull(),
         ]);
     }
 
