@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * Модель User
  *
  * @property integer $id
  * @property string $username
@@ -22,11 +22,13 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
-     * Validate constant
+     * Константы
      */
     const MIN_LENGTH_PASS = 6;
 
     /**
+     * Имя таблицы
+     *
      * @return string
      */
     public static function tableName()
@@ -35,6 +37,8 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Правила валидации
+     *
      * @return array
      */
     public function rules()
@@ -48,21 +52,27 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Атрибуты
+     *
      * @return array
      */
     public function attributeLabels()
     {
         return [
-            'id' => _('ID'),
-            'username' => _('Логин'),
-            'name' => _('Имя'),
-            'surname' => _('Фамилия'),
-            'password' => _('Пароль'),
+            'id' => Yii::t('app', 'ID'),
+            'username' => Yii::t('app','Логин'),
+            'name' => Yii::t('app', 'Имя'),
+            'surname' => Yii::t('app', 'Фамилия'),
+            'password' => Yii::t('app', 'Пароль'),
+            'salt' => Yii::t('app', 'Соль'),
+            'access_token' => Yii::t('app', 'Токен'),
+            'create_date' => Yii::t('app', 'Дата регистрации'),
         ];
     }
 
     /**
-     * Before save event handler
+     * Обработчик события
+     *
      * @param bool $insert
      * @return bool
      */
@@ -91,7 +101,8 @@ class User extends ActiveRecord implements IdentityInterface
     }
     
     /**
-     * Generate the salt
+     * Генерируем соль
+     *
      * @return string
      */
     public function saltGenerator()
@@ -100,7 +111,8 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Return pass with the salt
+     * Возвращаем пароль с солью
+     *
      * @param $password
      * @param $salt
      * @return string
@@ -111,7 +123,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Найти пользователя по ID
+     *
+     * @param string|integer $id - ID пользователя, которого ищем
+     * @return IdentityInterface|null - объект пользователя, которому принадлежит ID
      */
     public static function findIdentity($id)
     {
@@ -119,7 +134,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Найти пользователя по токену
+     *
+     * @param string $token
+     * @return IdentityInterface|null
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -127,7 +145,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
+     * Найти пользователя по логину
      *
      * @param string $username
      * @return static|null
@@ -138,7 +156,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Поолучить ID
+     *
+     * @return string|integer $id
      */
     public function getId()
     {
@@ -146,23 +166,31 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Получить токен
+     *
+     * @return string $access_token
      */
     public function getAuthKey()
     {
         return $this->access_token;
     }
 
+    /**
+     * Проверить токен
+     *
+     * @param string $authKey
+     * @return bool
+     */
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
     }
 
     /**
-     * Validates password
+     * Проверить пароль
      *
-     * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
+     * @param string $password - пароль для валидации
+     * @return bool - правильный ли пароль для текущего пользователя
      */
     public function validatePassword($password)
     {
@@ -170,7 +198,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
+     * Генерируем пароль с солью
      *
      * @param string $password
      */
