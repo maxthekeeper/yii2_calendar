@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Calendar;
-use yii\data\ActiveDataProvider;
+use app\models\search\CalendarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +35,11 @@ class CalendarController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Calendar::find(),
-        ]);
+        $searchModel = new CalendarSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

@@ -19,7 +19,7 @@ class CalendarSearch extends Calendar
     {
         return [
             [['id', 'creator'], 'integer'],
-            [['text', 'date_create'], 'safe'],
+            [['text', 'date_event'], 'safe'],
         ];
     }
 
@@ -61,7 +61,7 @@ class CalendarSearch extends Calendar
         $query->andFilterWhere([
             'id' => $this->id,
             'creator' => $this->creator,
-            'date_create' => $this->date_create,
+            'date_event' => $this->date_event,
         ]);
 
         $query->andFilterWhere(['like', 'text', $this->text]);

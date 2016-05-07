@@ -14,9 +14,28 @@ class m160503_180103_create_access extends Migration
     {
         $this->createTable('access', [
             'id' => $this->primaryKey(),
-            'calendar_id' => $this->integer()->notNull(),
-            'user_id' => $this->integer()->notNull(),
+            'user_owner' => $this->integer()->notNull(),
+            'user_guest' => $this->integer()->notNull(),
+            'date' => $this->date(),
         ]);
+
+        $this->addForeignKey(
+            'fk-access-user_owner',
+            'access',
+            'user_owner',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        $this->addForeignKey(
+            'fk-access-user_guest',
+            'access',
+            'user_guest',
+            'user',
+            'id',
+            'CASCADE'
+        );
     }
 
     /**
@@ -24,6 +43,16 @@ class m160503_180103_create_access extends Migration
      */
     public function down()
     {
+        $this->dropForeignKey(
+            'fk-access-user_guest',
+            'access'
+        );
+
+        $this->dropForeignKey(
+            'fk-access-user_owner',
+            'access'
+        );
+
         $this->dropTable('access');
     }
 }

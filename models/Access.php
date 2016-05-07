@@ -8,8 +8,12 @@ use Yii;
  * This is the model class for table "access".
  *
  * @property integer $id
- * @property integer $calendar_id
- * @property integer $user_id
+ * @property integer $user_owner
+ * @property integer $user_guest
+ * @property string $date
+ *
+ * @property User $userGuest
+ * @property User $userOwner
  */
 class Access extends \yii\db\ActiveRecord
 {
@@ -27,8 +31,11 @@ class Access extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['calendar_id', 'user_id'], 'required'],
-            [['calendar_id', 'user_id'], 'integer'],
+            [['user_owner', 'user_guest'], 'required'],
+            [['user_owner', 'user_guest'], 'integer'],
+            [['date'], 'safe'],
+            [['user_guest'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_guest' => 'id']],
+            [['user_owner'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_owner' => 'id']],
         ];
     }
 
@@ -39,9 +46,26 @@ class Access extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'calendar_id' => Yii::t('app', 'Calendar ID'),
-            'user_id' => Yii::t('app', 'User ID'),
+            'user_owner' => Yii::t('app', 'User Owner'),
+            'user_guest' => Yii::t('app', 'User Guest'),
+            'date' => Yii::t('app', 'Date'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserGuest()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_guest']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOwner()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_owner']);
     }
 
     /**

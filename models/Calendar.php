@@ -10,7 +10,9 @@ use Yii;
  * @property integer $id
  * @property string $text
  * @property integer $creator
- * @property string $date_create
+ * @property string $date_event
+ *
+ * @property User $calendarCreator
  */
 class Calendar extends \yii\db\ActiveRecord
 {
@@ -31,7 +33,8 @@ class Calendar extends \yii\db\ActiveRecord
             [['text'], 'string'],
             [['creator'], 'required'],
             [['creator'], 'integer'],
-            [['date_create'], 'safe'],
+            [['date_event'], 'safe'],
+            [['creator'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator' => 'id']],
         ];
     }
 
@@ -44,8 +47,16 @@ class Calendar extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'text' => Yii::t('app', 'Text'),
             'creator' => Yii::t('app', 'Creator'),
-            'date_create' => Yii::t('app', 'Date Create'),
+            'date_event' => Yii::t('app', 'Date Event'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCalendarCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'creator']);
     }
 
     /**
