@@ -70,6 +70,21 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public function getCalendar()
+    {
+        return $this->hasMany(Calendar::className(), ['creator' => 'id']);
+    }
+
+    public function getAccessUserOwner()
+    {
+        return $this->hasMany(Access::className(), ['user_owner' => 'id']);
+    }
+
+    public function getAccessUserGuest()
+    {
+        return $this->hasMany(Access::className(), ['user_guest' => 'id']);
+    }
+
     /**
      * Обработчик события
      *

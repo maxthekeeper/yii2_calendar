@@ -18,6 +18,12 @@ use Yii;
 class Access extends \yii\db\ActiveRecord
 {
     /**
+     * Constants
+     */
+    const ACCESS_CREATOR = 1;
+    const ACCESS_GUEST= 2;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -66,6 +72,29 @@ class Access extends \yii\db\ActiveRecord
     public function getUserOwner()
     {
         return $this->hasOne(User::className(), ['id' => 'user_owner']);
+    }
+
+    /**
+     * Check access current user by calendar's date
+     * @param Calendar $model
+     * @return bool|int
+     */
+    public static function checkAccess($model)
+    {
+        if($model->creator == Yii::$app->user->id)
+        {
+            return self::ACCESS_CREATOR;
+        }
+
+        $accessCalendar = self::find()
+            ->withDate($model->date_event)
+            ->withGuest(Yii::$app->user->id)
+            ->exists();
+
+        if($accessCalendar)
+            return self::ACCESS_GUEST;
+        
+        return false;
     }
 
     /**

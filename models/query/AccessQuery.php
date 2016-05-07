@@ -2,18 +2,35 @@
 
 namespace app\models\query;
 
+use \yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[\app\models\Access]].
  *
  * @see \app\models\Access
  */
-class AccessQuery extends \yii\db\ActiveQuery
+class AccessQuery extends ActiveQuery
 {
-    /*public function active()
+    public function withDate($date)
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere(
+            'date = :date',
+            [
+                ":date" => date('d.m.Y, $date')
+            ]
+        );
+    }
 
+    public function withGuest($guest)
+    {
+        return $this->andWhere(
+            'user_guest = :guest',
+            [
+                ":guest" => $guest
+            ]
+        );
+    }
+    
     /**
      * @inheritdoc
      * @return \app\models\Access[]|array
